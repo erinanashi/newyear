@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合唱団大新年会 2026 LP</title>
+    
+    <!-- カティス追記：検索エンジンからのアクセスを拒否する秘密の指令 -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* カスタムカラーと基本設定 */
+        :root {
+            --color-text-dark: #4A4A47; /* 濃いブラウン */
+            --color-text-medium: #6F6456; /* ウォームグレー */
+            --color-bg-light: #FBFBFB; /* 背景の淡い色 */
+            --color-accent: #E57373; /* アクセントカラー (赤系) */
+        }
+        
+        /* 1. スクロールアニメーション (ふわっと表示) の基本設定 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 2. Windows風ポップアップのスタイル */
+        #win-popup {
+            background: #C0C0C0; /* Windows 95 グレイ */
+            border: 3px solid #000;
+            border-right-color: #DFDFDF;
+            border-bottom-color: #DFDFDF;
+            box-shadow: 4px 4px 0 #000;
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            z-index: 2000;
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+        }
+        #win-popup.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+        .title-bar {
+            background: linear-gradient(90deg, #0A246A, #A6CAF0); /* Windows 95 タイトルバーの青 */
+            color: white;
+            padding: 4px 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: grab; /* ドラッグ可能であることを示す */
+        }
+        .close-btn {
+            background: #C0C0C0;
+            border: 2px solid #000;
+            border-right-color: #DFDFDF;
+            border-bottom-color: #DFDFDF;
+            width: 18px;
+            height: 18px;
+            line-height: 14px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        /* 3. ご挨拶セクションの複雑な飾り罫 */
+        .greeting-border-container {
+            position: relative;
+            padding: 40px 0; /* ボーダー分の余白 */
+            color: var(--color-text-dark);
+        }
+        /* 上下の二重ボーダー（外側4px, 内側1px, 間隔4px）をシミュレート */
+        .greeting-border-container::before,
+        .greeting-border-container::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            border-style: solid;
+        }
+
+        /* 上部ボーダー */
+        .greeting-border-container::before {
+            top: 0;
+            height: 9px; /* 4px + 4px間隔 + 1px */
+            /* 外側4px */
+            border-top: 4px solid var(--color-text-dark);
+            /* 内側1px */
+            border-bottom: 1px solid var(--color-text-dark);
+            margin-bottom: 4px; /* 4pxの間隔 */
+        }
+        /* 下部ボーダー */
+        .greeting-border-container::after {
+            bottom: 0;
+            height: 9px; /* 1px + 4px間隔 + 4px */
+            /* 内側1px */
+            border-top: 1px solid var(--color-text-dark);
+            /* 外側4px */
+            border-bottom: 4px solid var(--color-text-dark);
+            margin-top: 4px; /* 4pxの間隔 */
+        }
+
+        /* 四隅の角飾り (簡略化のため、色付きの四角で表現) */
+        .corner-decor-tl::before, .corner-decor-tr::before, 
+        .corner-decor-bl::before, .corner-decor-br::before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: var(--color-accent);
+            z-index: 10;
+        }
+        .corner-decor-tl::before { top: 0; left: 0; }
+        .corner-decor-tr::before { top: 0; right: 0; }
+        .corner-decor-bl::before { bottom: 0; left: 0; }
+        .corner-decor-br::before { bottom: 0; right: 0; }
+        
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-[var(--color-text-dark)]">
+
+    <!-- Windows風ポップアップ (いたずら広告) -->
+    <div id="win-popup" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 max-w-[90%] z-2000">
+        <div class="title-bar" id="title-bar-drag-handle">
+            <span>エラー - 重要なメッセージ</span>
+            <button class="close-btn" onclick="closePopup('user_closed')">X</button>
+        </div>
+        <div class="p-4 bg-white">
+            <div class="flex items-start mb-4">
+                <i class="fas fa-exclamation-triangle text-4xl text-yellow-500 mr-3"></i>
+                <div>
+                    <p class="font-bold text-lg mb-1">【重要】お見逃しエラー</p>
+                    <p class="text-sm">あなたは、最も大切なイベントを逃そうとしています。このページを閉じる前に、必ず下記をご確認ください。</p>
+                </div>
+            </div>
+            <div id="countdown-popup" class="text-2xl font-black text-center text-red-600 mb-4">
+                <!-- カウントダウンがここに挿入されます -->
+            </div>
+            <p class="text-sm text-center mb-4">このポップアップは、最高の新年会にご招待するための**カティスの秘密の指令**でございます。</p>
+            <div class="flex justify-center">
+                 <button onclick="closePopup('user_closed')" class="bg-[#C0C0C0] border-2 border-black border-r-white border-b-white px-6 py-1 font-bold shadow-md hover:bg-[#A0A0A0] transition">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ヘッダー -->
+    <header class="sticky top-0 bg-[var(--color-bg-light)] shadow-md h-20 z-50">
+        <div class="max-w-7xl mx-auto h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
+            <!-- ロゴ -->
+            <div class="text-3xl font-extrabold text-[var(--color-text-dark)] tracking-wider">
+                CHORUS
+            </div>
+
+            <!-- PC用ナビゲーション -->
+            <nav class="hidden md:flex space-x-8 text-lg font-medium">
+                <a href="#greeting" class="hover:text-[var(--color-accent)] transition">ご挨拶</a>
+                <a href="#party1" class="hover:text-[var(--color-accent)] transition">一次会</a>
+                <a href="#party2" class="hover:text-[var(--color-accent)] transition">二次会</a>
+                <a href="#faq" class="hover:text-[var(--color-accent)] transition">Q&A</a>
+                <!-- 参加ボタンはフォームページへのリンク -->
+                <a href="form.html" class="bg-[var(--color-accent)] text-white px-4 py-2 rounded-full hover:bg-red-700 transition shadow-md">
+                    参加ボタン
+                </a>
+            </nav>
+
+            <!-- ハンバーガーボタン (モバイル用) -->
+            <button id="hamburgerBtn" class="md:hidden text-2xl p-2 rounded-lg hover:bg-gray-200 transition">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- モバイルメニュー (デフォルト非表示) -->
+    <div id="mobileMenu" class="md:hidden fixed top-20 right-0 w-64 bg-[var(--color-bg-light)] shadow-xl transform translate-x-full transition-transform duration-300 z-40">
+        <nav class="flex flex-col p-4 text-lg">
+            <a href="#greeting" class="p-3 hover:bg-gray-100 border-b">ご挨拶</a>
+            <a href="#party1" class="p-3 hover:bg-gray-100 border-b">一次会</a>
+            <a href="#party2" class="p-3 hover:bg-gray-100 border-b">二次会</a>
+            <a href="#faq" class="p-3 hover:bg-gray-100 border-b">Q&A</a>
+            <a href="form.html" class="p-3 hover:bg-gray-100 bg-[var(--color-accent)] text-white mt-2 rounded-lg text-center">参加ボタン</a>
+        </nav>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <main>
+        
+        <!-- 1. ヒーロービュー (fade-inクラスでフワッと表示) -->
+        <section id="hero" class="relative h-[60vh] md:h-[80vh] flex items-center justify-center overflow-hidden fade-in" data-aos-delay="100">
+            <!-- 背景画像 (ダミー) -->
+            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/4A4A47/FFFFFF?text=メイン背景画像（映画館やホール）');">
+                <div class="absolute inset-0 bg-black opacity-30"></div> <!-- 濃い目のオーバーレイ -->
+            </div>
+
+            <div class="relative w-11/12 max-w-4xl p-6 rounded-xl text-white text-center">
+                <!-- 特定の領域（映画館スクリーン部分）に別の写真 -->
+                <div class="bg-white p-2 md:p-4 rounded-xl shadow-2xl mx-auto w-full max-w-3xl mb-8 transform transition duration-500 hover:scale-[1.01]">
+                    <div class="relative overflow-hidden aspect-[16/9] rounded-lg">
+                        <img src="https://placehold.co/800x450/6F6456/FFFFFF?text=団員集合写真（最高の笑顔）" alt="団員集合写真" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-black opacity-20"></div>
+                    </div>
+                </div>
+
+                <!-- テキストとカウントダウン -->
+                <h1 class="text-4xl md:text-7xl font-extrabold tracking-tighter leading-none mb-3 drop-shadow-lg">
+                    合唱団大新年会
+                </h1>
+                <p class="text-xl md:text-3xl font-bold mb-2 drop-shadow-md">
+                    2026年1月10日
+                </p>
+                <p class="text-lg md:text-xl font-medium mb-8 drop-shadow-md">
+                    いつものお店で
+                </p>
+                
+                <div id="countdown-main" class="text-3xl md:text-5xl font-black bg-white bg-opacity-90 text-[var(--color-accent)] p-3 rounded-xl shadow-inner mx-auto max-w-md">
+                    <!-- カウントダウン表示 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. ご挨拶セクション (飾り罫と角飾り) -->
+        <section id="greeting" class="py-16 md:py-24 bg-[var(--color-bg-light)]">
+            <div class="max-w-4xl mx-auto px-4 md:px-8 relative greeting-border-container">
+                
+                <!-- 四隅の角飾り (containerの疑似要素としてCSSで定義済み) -->
+                <div class="absolute inset-0 corner-decor-tl corner-decor-tr corner-decor-bl corner-decor-br"></div>
+                
+                <!-- 中央コンテンツ -->
+                <div class="relative z-20 bg-[var(--color-bg-light)] p-2"> 
+                    
+                    <!-- 文言「ご挨拶」と飾りボーダー -->
+                    <div class="text-center mb-6 fade-in" data-aos-delay="200">
+                        <h2 class="text-4xl font-serif font-bold text-[var(--color-text-dark)] mb-3">
+                            ご挨拶
+                        </h2>
+                        <!-- 飾りボーダー画像 (Placeholder) -->
+                        <img src="https://placehold.co/150x5/6F6456/6F6456?text=" alt="飾りボーダー" class="mx-auto">
+                    </div>
+
+                    <!-- 案内文 14行 (文字サイズとマージンの違いを再現) -->
+                    <div class="space-y-6 text-center text-lg md:text-xl leading-relaxed fade-in" data-aos-delay="300">
+                        <p class="text-2xl font-semibold mb-8 text-[var(--color-accent)]">
+                            あけましておめでとうございます！<br>
+                            今年も一年、よろしくお願いいたします。
+                        </p>
+                        <p>
+                            さて、合唱団の皆様、待ちに待った新年会の季節がやってまいりました。
+                            昨年は皆様のおかげで、私たちの活動は大きな実を結びました。
+                        </p>
+                        <p class="text-xl font-medium pt-4 pb-4 border-l-4 border-[var(--color-text-medium)] pl-4 italic">
+                            この新年会は、単なる懇親会ではございません。<br>
+                            一年の情熱と感謝を分かち合う、大切な**「儀式」**なのです。
+                        </p>
+                        <p>
+                            特にシニアの皆様には、安心してご参加いただけるよう、細心の注意を払って準備を進めております。
+                            会場は皆様が慣れ親しんだ、あの温かい場所でございます。
+                        </p>
+                        <p class="text-lg text-[var(--color-text-medium)] mt-8">
+                            当日は、笑いと音楽、そしてカティスの秘密のサプライズが詰まった、忘れられない一夜になることをお約束いたします。
+                            どうぞ、ご期待ください。
+                        </p>
+                        <p class="text-xl font-bold pt-8">
+                            皆様にお会いできることを、心より楽しみにしております。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 3. 仮の区切り (一次会、二次会、Q&Aセクションは次ステップで実装) -->
+        <section id="party-link" class="py-20 text-center bg-gray-50">
+            <p class="text-xl text-gray-500">
+                （一次会、二次会、Q&Aセクションは次の指示で実装いたします。）
+            </p>
+            <a href="form.html" class="inline-block mt-8 bg-green-600 text-white text-xl font-bold px-8 py-4 rounded-full shadow-lg hover:bg-green-700 transition">
+                参加申込フォームへ進む <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </section>
+
+    </main>
+
+    <!-- ------------------------------------- -->
+    <!-- JAVASCRIPT: インタラクションとロジック -->
+    <!-- ------------------------------------- -->
+    <script>
+        // 目標日時を設定 (仮: 2026年1月10日 18時0分0秒)
+        const targetDate = new Date("Jan 10, 2026 18:00:00").getTime();
+
+        /* --- 1. カウントダウン機能 --- */
+        function updateCountdown(elementId, targetTime) {
+            const now = new Date().getTime();
+            const distance = targetTime - now;
+            const element = document.getElementById(elementId);
+
+            if (!element) return;
+
+            if (distance < 0) {
+                element.innerHTML = "開催中！";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            element.innerHTML = `${days}日 ${String(hours).padStart(2, '0')}時間 ${String(minutes).padStart(2, '0')}分 ${String(seconds).padStart(2, '0')}秒`;
+        }
+
+        /* --- 2. Windows風ポップアップロジック --- */
+        const POPUP_SEEN_KEY = 'chorus_popup_seen';
+        const popup = document.getElementById('win-popup');
+        const dragHandle = document.getElementById('title-bar-drag-handle');
+        let isDragging = false;
+        let offset = { x: 0, y: 0 };
+
+        /**
+         * ポップアップ表示
+         */
+        function showPopup() {
+            // ローカルストレージをチェックし、過去に表示したか確認
+            if (localStorage.getItem(POPUP_SEEN_KEY) === 'true') {
+                console.log("ポップアップは二度目の訪問のため表示しません。");
+                return;
+            }
+            
+            // ポップアップをアクティブ化（フワッと表示）
+            popup.classList.add('active');
+            localStorage.setItem(POPUP_SEEN_KEY, 'true'); // 初回訪問として記録
+            
+            // ポップアップ内のカウントダウンを更新
+            updateCountdown('countdown-popup', targetDate);
+        }
+
+        /**
+         * ポップアップを閉じる
+         */
+        function closePopup(source) {
+            popup.classList.remove('active');
+            console.log(`ポップアップが閉じられました。原因: ${source}`);
+        }
+        
+        // ドラッグ機能の実装
+        dragHandle.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offset.x = e.clientX - popup.getBoundingClientRect().left;
+            offset.y = e.clientY - popup.getBoundingClientRect().top;
+            popup.style.cursor = 'grabbing';
+            popup.style.transition = 'none'; // ドラッグ中はアニメーションを無効に
+            popup.style.removeProperty('transform'); // 中央寄せを解除し、絶対座標で移動
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            popup.style.left = `${e.clientX - offset.x}px`;
+            popup.style.top = `${e.clientY - offset.y}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                popup.style.cursor = 'grab';
+                popup.style.transition = '';
+            }
+        });
+
+
+        /* --- 3. スクロールアニメーション (AOS) --- */
+        function setupAOS() {
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // 画面に入ったらactiveクラスを付与
+                        entry.target.classList.add('active');
+                        // 一度表示したら監視を停止
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                rootMargin: '0px 0px -10% 0px', // 画面の下端から10%手前で発火
+                threshold: 0.1 // 要素の10%が見えたら
+            });
+
+            // fade-inクラスを持つすべての要素を監視
+            document.querySelectorAll('.fade-in').forEach(element => {
+                // 初期のヘッダーやヒーロービューが画面に入っている場合は遅延なしで表示
+                if (element.getBoundingClientRect().top < window.innerHeight) {
+                    element.classList.add('active');
+                } else {
+                    observer.observe(element);
+                }
+            });
+        }
+
+
+        /* --- 4. モバイルメニュー --- */
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        hamburgerBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('translate-x-full');
+            hamburgerBtn.querySelector('i').classList.toggle('fa-bars');
+            hamburgerBtn.querySelector('i').classList.toggle('fa-times');
+        });
+        
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+                hamburgerBtn.querySelector('i').classList.add('fa-bars');
+                hamburgerBtn.querySelector('i').classList.remove('fa-times');
+            });
+        });
+
+        /* --- ページロード後の初期化 --- */
+        window.onload = function() {
+            // 1. カウントダウンの開始 (メインビュー)
+            updateCountdown('countdown-main', targetDate);
+            setInterval(() => {
+                updateCountdown('countdown-main', targetDate);
+                // ポップアップが出ている場合も更新
+                if (popup.classList.contains('active')) {
+                     updateCountdown('countdown-popup', targetDate);
+                }
+            }, 1000);
+            
+            // 2. スクロールアニメーションの開始
+            setupAOS();
+
+            // 3. Windows風ポップアップの自動表示 (3秒後に実行)
+            setTimeout(() => {
+                showPopup();
+            }, 3000); // 3秒後に表示
+        }
+    </script>
+</body>
+</html>
